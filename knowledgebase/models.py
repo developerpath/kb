@@ -125,4 +125,3 @@ class Activity(models.Model):
         null=False,
     )
     activity_created = models.DateTimeField(auto_now_add=True, null=False)
-    
