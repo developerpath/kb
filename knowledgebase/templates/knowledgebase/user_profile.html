@@ -1,0 +1,151 @@
+{% extends 'knowledgebase/base.html' %}
+{% load static %}
+
+{% block main_block_class %}user-profile{% endblock %}
+
+{% block main_top %}
+  <div class="row-flex user-profile-title">
+    <h1>User Profile</h1>
+    <div>
+      <label class="toolbar-btn" for="submitBtn">Update</label>
+    </div>
+  </div>
+{% endblock %}
+
+{% block main_middle %}
+  <form class="row-flex" method="post" action="." enctype='multipart/form-data'>
+    {% csrf_token %}
+    <input id="submitBtn" type="submit" hidden>
+    <div class="user-profile-sidebar">
+      <div class="avatar">
+        <span class="img">
+        {% if avatar %}
+            <img src="data:image/png;base64,{{avatar}}" alt="">
+        {% else %}
+        <img src="{% static 'img/man-avatar.png' %}" alt="">
+        {% endif %}
+          </span>
+        {% if form.first_name.value or form.last_name.value %}
+          <h2>{{form.first_name.value}} {{form.last_name.value}}</h2>
+        {% else %}
+          <h2>{{request.user}}</h2>
+        {% endif %}
+        {%comment%}<p>position</p>{%endcomment%}
+        <label class="btn">Upload{{form_ext.user_avatar}}</label>
+      </div>
+      <div class="description">
+        <p><b>Description</b></p>
+        {% if form_ext.user_desc.value %}
+          <p>{{form_ext.user_desc.value}}</p>
+        {% else %}
+          <p>Tell about yourself!</p>
+        {% endif %}
+
+      </div>
+    </div>
+    
+    <div class="user-profile-fields form">
+      <h3>Account Details</h3>
+      <div>
+        {{ form.non_field_errors }}
+        <div class="row-flex">
+          <label class="w6">
+            <b>{{form.first_name.label}}</b>
+            {{form.first_name}}
+          </label>
+          <label class="w6">
+            <b>{{form.last_name.label}}</b>
+            {{form.last_name}}
+            {{form.last_name.errors}}
+          </label>
+        </div>
+        
+        <div class="row-flex">
+          <label class="w6">
+            <b>{{form.password1.label}}</b>
+            {{form.password1}}
+            {{form.password1.errors}}
+          </label>
+          <label class="w6">
+            <b>{{form.password2.label}}</b>
+            {{form.password2}}
+            {{form.password2.errors}}
+          </label>
+        </div>
+      
+        <div class="row-flex">
+          <label class="w6">
+            <b>{{form.email.label}}</b>
+            {{form.email}}
+            {{form.email.errors}}
+          </label>
+          <label class="w6">
+            <b>{{form_ext.user_phone.label}}</b>
+            {{form_ext.user_phone}}
+            {{form_ext.user_phone.errors}}
+          </label>
+        </div>
+      </div>
+      <hr>
+      <div>
+        <label class="w12">
+          <b>{{form_ext.user_address.label}}</b>
+          {{form_ext.user_address}}
+          {{form_ext.user_address.errors}}
+        </label>
+        <div class="row-flex">
+          <label class="w6">
+            <b>{{form_ext.user_city.label}}</b>
+          {{form_ext.user_city}}
+          {{form_ext.user_city.errors}}
+          </label>
+          <label class="w6">
+            <b>{{form_ext.user_prov.label}}</b>
+          {{form_ext.user_prov}}
+          {{form_ext.user_prov.errors}}
+          </label>
+        </div>
+        <div class="row-flex">
+          <label class="w6">
+            <b>{{form_ext.user_postal.label}}</b>
+          {{form_ext.user_postal}}
+          {{form_ext.user_postal.errors}}
+          </label>
+          <label class="w6">
+            <b>{{form_ext.user_country.label}}</b>
+          {{form_ext.user_country}}
+          {{form_ext.user_country.errors}}
+          </label>
+        </div>
+      </div>
+      <hr>
+      <div>
+        <label class="w12">
+          <b>{{form_ext.user_desc.label}}</b>
+          {{form_ext.user_desc}}
+          {{form_ext.user_desc.errors}}
+        </label>
+      </div>
+    </div>
+    
+    <div class="recent-activity">
+      <h3>Recent Activity</h3>
+      <ul>
+        {% for itm in activity %}
+          {% if itm.activity_page.space_id_id %}
+            <li>
+              {% if itm.activity_type == 'DELETED' %}
+                <b>{{itm.activity_page.page_title}}</b>
+              {% else %}
+                <a href="{% url 'page_view' itm.activity_page.space_id_id itm.activity_page.id %}">
+                  <b>{{itm.activity_page.page_title}}</b>
+                </a>
+              {% endif %}
+              <span class="description">{{itm.activity_type|title}} - {{itm.activity_created}}</span>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+      </div>
+  </form>
+{% endblock %}

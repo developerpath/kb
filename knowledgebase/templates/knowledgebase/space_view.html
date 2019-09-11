@@ -1,0 +1,42 @@
+{% extends 'knowledgebase/base.html' %}
+
+{% block main_block_class %}space-view{% endblock %}
+{% block main_top %}
+  <h1>Spaces list</h1>
+{% endblock %}
+
+{% block content %}
+  <table class="space-view-table">
+    <tr>
+     <th style="position: relative;"><a class="create-btn" href="{% url 'space_edit' 0 1 %}">+</a></th>
+      <th>Space Name</th>
+      <th>Space Description</th>
+      <th class="actions">Edit</th>
+      <th class="actions">Delete</th>
+    </tr>
+    {% for space in spaces %}
+    <tr>
+     <td></td>
+      <td><a class="" href="{% url 'page_view' space.space_id %}">{{space}}</a></td>
+      <td class="description">{{space.space_description}}</td>
+      <td class="actions"><a class="toolbar-btn" href="{% url 'space_edit' space.space_id %}">Edit</a></td>
+      <td>
+        <label class="toolbar-btn" for="switch{{forloop.counter}}">Delete</label>
+        <input id="switch{{forloop.counter}}" class="modal-switch" type="checkbox" hidden>
+        <label for="switch" class="modal-container">
+          <div class="modal">
+            <h4 class="modal-header">Delete confirmation dialog</h4>
+            <p>Do you realy want to delete this item?</p>
+            <div class="btn-box">
+              <label for="switch{{forloop.counter}}">Cancel</label>
+              <a class="toolbar-btn" href="{% url 'space_edit' space.space_id 2 %}">Delete</a>
+            </div>
+          </div>
+        </label>
+      </td>
+    </tr>
+  {% endfor %}
+    
+  </table>
+  
+{% endblock %}

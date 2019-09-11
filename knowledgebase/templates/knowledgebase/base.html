@@ -1,0 +1,82 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}KnowledgeBase{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'basic.css' %}">
+  <link rel="stylesheet" href="{% static 'kn.css' %}">
+  {% block custom_header_elements %}{% endblock %}
+</head>
+
+<body>
+  <header>
+    <nav class="row-flex">
+      <div id="logo" class="w6">WEBILEX</div>
+      <ul id="top-navbar" class="w6 flex-nav">
+        {% block top_navbar %}
+          {% if not user.is_authenticated %}
+            <li><a class="btn" href="{% url 'login' %}">Sign In</a></li>
+            <li><a class="btn" href="{% url 'signup' %}">Sign Up</a></li>
+          {% else %}
+            <li>
+              <div class="user-block">
+                <span class="user-block-avatar">
+                  {% if request.user.userextended.user_avatar %}
+                    <img src="data:image/png;base64,{{ request.user.userextended.user_avatar }}" alt="">
+                  {% else %}
+                    <img src="{% static 'img/man-avatar.png' %}" alt="">
+                  {% endif %}
+                  </span>
+                <label>
+                  <input type="checkbox">
+                  <span class="user-block-name">
+                    {% if user.first_name or user.last_name %}
+                      {{user.first_name}} {{user.last_name}}
+                    {% else %}
+                      {{user}}
+                    {% endif %}
+                  </span>
+                  <ul>
+                    <li><a href="{% url 'profile'%}">User Profile</a></li>
+                    <li><a href="{% url 'space_view'%}">Spaces</a></li>
+                    <li><a href="{% url 'logout'%}">Logout</a></li>
+                  </ul>
+                </label>
+              </div>
+            </li>
+          {% endif %}
+        {% endblock %}
+      </ul>
+    </nav>
+  </header>
+  
+  <main class="row-flex-column {% block main_block_class%}{% endblock %}">
+    {% block main %}
+      {% block main_top %}{% endblock %}
+      
+      <div class="main-middle row-flex">
+        {% block main_middle %}
+          {% block left_sidebar %}{% endblock %}
+
+          <section id="content">
+            {% block content %}{% endblock %}
+          </section>
+
+          {% block right_sidebar %}{% endblock %}
+        {% endblock main_middle %}
+      </div>
+      
+      {% block main_bottom %}{% endblock %}
+    {% endblock %}
+  </main>
+  
+  <footer>
+    {% block footer %}
+      <span>Copyright 2019</span>
+    {% endblock %}
+  </footer>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{% extends 'knowledgebase/base.html' %}
+
+{% block main_block_class %}page-edit{% endblock %}
+{% block sidebar_nav %}{% endblock %}
+
+{% block content %}
+  <form method="post" action=".">
+    {% csrf_token %}
+    
+    <div class="page-toolbar">
+      <div>
+        <a class="toolbar-btn" href="{% url 'page_view' page.space_id_id page.id %}">Back</a>
+      </div>
+      {% if draft %}
+          {% if draft.restore %}
+            <div class="message danger">
+              You are currently editing draft saved
+          {% else %}
+            <div class="message info">
+              You have saved draft to restore
+          {% endif %}
+          ({{ draft.page_updated }})
+        </div>
+      {% endif %}
+      <ul class="group-btn">
+        <li><label class="toolbar-btn" for="cl">Draft</label><input id="cl" type="checkbox" hidden>
+          <ul class="dropdown">
+            <li><input type="submit" name='draft' value="Save Draft"></li>
+            {% if draft %}
+              <li>
+                {% if draft.restore %}
+                  <a href="{% url 'page_edit' page.space_id_id page.id %}">Decline Draft</a>
+                {% else %}
+                  <a href="{% url 'page_edit' page.space_id_id page.id 3 %}">Restore Draft</a>
+                {% endif %}
+              </li>
+            {% endif %}
+          </ul>
+        </li>
+        <li><button class="toolbar-btn" type="submit">Save</button></li>
+      </ul>
+    </div>
+    {{form.page_title}}
+
+    {{form.page_content}}
+    
+  </form>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'knowledgebase/base.html' %}
+
+{% block main_block_class %}page-view{% endblock %}
+
+{% block left_sidebar %}
+  <aside id="left-sidebar">
+    <input id="spaces" type="radio" name="sidebar_switch">
+    <input id="pages" type="radio" name="sidebar_switch" checked>
+
+    <hr>
+    <label id="spaces-label" for="spaces">Spaces</label>
+    <label id="pages-label" for="pages">Pages</label>
+    <hr>
+
+    <div class="sidebar-menu">
+      <h4 class="title">
+        {% block space_name %}<a href="{% url 'page_view' space.space_id %}">{{space}}</a>{% endblock %}
+        <a class="create-btn" href="{% url 'page_edit' page.space_id_id page.id 1 %}">+</a>
+      </h4>
+      {% block space_items %}
+        {% autoescape off %}{{ sidebar }}{% endautoescape %}
+      {% endblock %}
+    </div>
+
+    <div class="sidebar-menu spaces-list">
+      <h4 class="title">
+        Spaces List
+        <a class="create-btn" href="{% url 'space_edit' page.space_id_id 1 %}">+</a>
+      </h4>
+      <ul>
+      {% for sp in spaces_list %}
+        {% if sp.space_id == space.space_id %}
+          <li class="active">
+        {% else %}
+          <li>
+        {% endif %}
+          <a href="{% url 'page_view' sp.space_id sp.space_home_id_id %}">{{sp.space_title}}</a></li>
+      {% endfor %}
+      </ul>
+    </div>
+  </aside>
+{% endblock %}
+
+{% block content %}
+  {% block page_title %}
+    <div class="row-flex page-title">
+      <h1>{{page}}
+        <span>
+          {% with page.page_creator as creator and page.page_modifier as modifier %}
+            {% if page.page_created == page.page_updated %}
+              Created by
+              {% if creator.first_name or creator.last_name %}
+                {{creator.first_name}} {{creator.last_name}}
+              {% else %}
+                {{page.page_creator}}
+              {% endif %}
+              on {{page.page_created}}
+            {% else %}
+              Last modified by
+              {% if modifier.first_name or modifier.last_name %}
+                {{modifier.first_name}} {{modifier.last_name}}
+              {% else %}
+                {{modifier}}
+              {% endif %}
+              on {{page.page_updated}}
+            {% endif %}
+          {% endwith %}
+        </span>
+      </h1>
+      <ul class="page-toolbar inline-nav">
+        <li><a class="toolbar-btn" href="{% url 'page_edit' page.space_id_id page.id %}">Edit</a></li>
+        {% if page.id != space.space_home_id_id %}
+          <li>
+            <label class="toolbar-btn" for="switch">Delete</label>
+            <input id="switch" class="modal-switch" type="checkbox" hidden>
+            <label for="switch" class="modal-container">
+              <div class="modal">
+                <h4 class="modal-header">Delete confirmation dialog</h4>
+                <p>Do you realy want to delete this item?</p>
+                <div class="btn-box">
+                  <label for="switch">Cancel</label>
+                  <a href="{% url 'page_edit' page.space_id_id page.id 2 %}">Delete</a>
+                </div>
+              </div>
+            </label>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  {% endblock %}
+  <div class="page-text">
+    {{page.page_content}}
+  </div>
+{% endblock %}

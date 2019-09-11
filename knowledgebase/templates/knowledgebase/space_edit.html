@@ -1,0 +1,21 @@
+{% extends 'knowledgebase/base.html' %}
+
+{% block main_block_class %}space-edit{% endblock %}
+
+{% block content %}
+  <form action="." method="post">
+    {% csrf_token %}
+    
+    <div class="page-toolbar">
+      <div>
+        <a href="{% url 'space_view' %}">Back</a>
+      </div>
+      <div><input type="submit" value="Save"></div>
+    </div>
+    
+    {{form.space_title}}
+
+    {{form.space_description}}
+
+  </form>
+{% endblock %}

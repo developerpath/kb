@@ -1,0 +1,46 @@
+{% extends 'knowledgebase/base.html' %}
+
+{% block content %}
+{% url 'login' as login_url %}
+{% url 'signup' as signup_url %}
+
+<div class="sign-form">
+  <div class="sign-form-header">
+    <span class="close-btn"></span>
+  </div>
+  
+  <div class="sign-form-links row-flex">
+    {% if request.META.PATH_INFO == login_url %}
+      <p class="w6">Sign In</p>
+      <a class="w6" href="{{signup_url}}">Sign Up</a>
+    {% else %}
+      <a class="w6" href="{{login_url}}">Sign In</a>
+      <p class="w6">Sign Up</p>
+    {% endif %}
+  </div>
+  
+  <form action="." method="post">
+    {% csrf_token %}
+    
+    {% for field in form %}
+      {{field}}
+      {% if field.errors %}
+        {{field.errors}}
+      {% endif %}
+    {% endfor %}
+    
+    {% if form.non_field_errors %}
+      {{form.non_field_errors}}
+    {% endif %}
+    
+    {% if request.META.PATH_INFO == login_url %}
+      <input type="hidden" name="next" value="{{ request.GET.redirect_to }}"/>
+      <a class="password-reset" href="">Don't remember your password?</a>
+      <button type="submit"><span>Sign In</span></button>
+    {% else %}
+      <button type="submit"><span>Sign Up</span></button>
+    {% endif %}
+    
+  </form>
+</div>
+{% endblock %}
